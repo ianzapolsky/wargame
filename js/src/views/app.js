@@ -31,7 +31,8 @@ define([
       this.game = new Game();
       this.game.addUnit(1, 40, 40);
       this.game.addUnit(1, 50, 50);
-
+      this.game.addUnit(2, 100, 100);
+  
       var _this = this;
       setInterval(function() {
         _this.game.tick();
