@@ -70,7 +70,6 @@ define([
     },
 
     handleClick: function(e) {
-      console.log('handleclick');
       this.game.players[0].executeMove(e.clientX, e.clientY);  
     },
 

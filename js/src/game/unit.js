@@ -20,8 +20,10 @@ define([
       var delta_x = this.dest_x - this.x;
       var delta_y = this.dest_y - this.y;
       var distance = Math.sqrt(delta_x * delta_x + delta_y * delta_y);
-      this.x += (delta_x / distance);
-      this.y += (delta_y / distance);
+      if (distance > 1) {
+        this.x += (delta_x / distance);
+        this.y += (delta_y / distance);
+      }
     }
   };
 
