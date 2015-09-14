@@ -3,11 +3,12 @@ define([
   'src/game/game'
 ], function(_, Game) {
 
-  var Unit = function Unit(game, pid, x, y) {
+  var Unit = function Unit(game, pid, x, y, planet) {
     this.game = game;
     this.pid = pid;
     this.x = x;
     this.y = y;
+    this.planet = planet;
     this.dest_x = null;
     this.dest_y = null;
     this.dead = null;
@@ -25,6 +26,16 @@ define([
     return Math.sqrt(delta_x * delta_x + delta_y * delta_y);
   };
 
+  Unit.prototype.orbitPlanet = function() {
+    if (this.dest_x === null || this.dest_y === null ||
+      this.getDist(this.dest_x, this.dest_y) < 5) {
+      var range = 40; 
+      var x_var = Math.random() * (-range - range) + range;
+      var y_var = Math.random() * (-range - range) + range;
+      this.setDest(this.planet.x + x_var, this.planet.y + y_var);
+    }
+  };
+
   Unit.prototype.moveToDest = function() {
     if (this.dest_x && this.dest_y) {
       var delta_x = this.dest_x - this.x;
@@ -35,6 +46,15 @@ define([
         this.y += (delta_y / distance);
       }
     }
+  };
+
+  Unit.prototype.act = function() {
+    this.detectFight(); 
+    if (this.planet !== null) {
+      this.orbitPlanet();
+    }
+    this.moveToDest();
+    this.detectDeath();
   };
 
   Unit.prototype.isWithin = function(x1, y1, x2, y2) {

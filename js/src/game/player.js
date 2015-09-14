@@ -23,6 +23,7 @@ define([
   Player.prototype.executeMove = function(x, y) {
     this.selected.forEach(function(unit) {
       unit.setDest(x, y);
+      unit.planet = null;
       unit.selected = false;
     });
     this.selected = [];

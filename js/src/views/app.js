@@ -29,14 +29,12 @@ define([
       this.context = this.canvas.getContext('2d');
       
       this.game = new Game();
-      this.game.addUnit(1, 40, 40);
-      this.game.addUnit(1, 50, 50);
-      this.game.addUnit(2, 100, 100);
-      this.game.addPlanet(200, 200, null);
+      this.game.addPlanet(200, 200, 1);
+      this.game.addPlanet(400, 200, 2);
   
       var _this = this;
       setInterval(function() {
-        _this.game.tick();
+        _this.game.doTick();
         _this.render();
       }, 50);
     },
@@ -101,7 +99,13 @@ define([
     renderPlanets: function() {
       var _this = this;
       this.game.planets.forEach(function(planet) {
-        _this.context.fillStyle = 'rgba(100,100,100,1)';
+        if (planet.owner === 1) {
+            _this.context.fillStyle = '#6495ED';
+        } else if (planet.owner === 2) {
+            _this.context.fillStyle = '#FF4500';
+        } else {
+            _this.context.fillStyle = 'rgba(100,100,100,1)';
+        }
         _this.context.beginPath();
         _this.context.arc(planet.x, planet.y, 35, 0, 2 * Math.PI, false);
         _this.context.fill();

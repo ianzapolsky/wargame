@@ -9,28 +9,32 @@ define([
     this.units = [];
     this.players = [new Player(1), new Player(2)];
     this.planets = [];
+    this.tick = 0;
   };
 
-  Game.prototype.addUnit = function(pid, x, y) {
-    var u = new Unit(this, pid, x, y);
+  Game.prototype.addUnit = function(pid, x, y, planet) {
+    var u = new Unit(this, pid, x, y, planet);
     this.units.push(u);
     this.players[pid - 1].units.push(u);
   };
 
   Game.prototype.addPlanet = function(x, y, owner) {
-    var p = new Planet(x, y);
+    var p = new Planet(this, x, y);
     if (owner) {
       p.owner = owner;
     }
     this.planets.push(p);
   };
 
-  Game.prototype.tick = function() {
-    var _this = this;
+  Game.prototype.doTick = function() {
+    this.tick += 1;
+    if (this.tick % 50 === 0) {
+      this.planets.forEach(function(planet) {
+        planet.addUnit();
+      });
+    }
     this.units.forEach(function(unit) {
-      unit.detectFight();
-      unit.moveToDest();
-      unit.detectDeath();
+      unit.act();
     });
     this.removeDead();
   };
