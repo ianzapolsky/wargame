@@ -12,6 +12,7 @@ define([
     var _this = this;
     this.units.forEach(function(unit) {
       if (unit.isWithin(x1, y1, x2, y2)) {
+        unit.selected = true;
         _this.selected.push(unit);
       }
     });
@@ -21,6 +22,7 @@ define([
     this.selected.forEach(function(unit) {
       unit.dest_x = x;
       unit.dest_y = y;
+      unit.selected = false;
     });
     this.selected = [];
   };

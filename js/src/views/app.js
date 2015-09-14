@@ -83,6 +83,10 @@ define([
       var _this = this;
       this.game.units.forEach(function(unit) {
         if (unit.pid === 1) {
+          if (unit.selected) {
+            _this.context.fillStyle = 'rgba(21, 137, 255, .5)';
+            _this.context.fillRect(unit.x-2,unit.y-2,6,6);
+          }
           _this.context.fillStyle = '#1589FF';
         } else if (unit.pid === 2) {
           _this.context.fillStyle = '#F70D1A';
