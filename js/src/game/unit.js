@@ -1,18 +1,28 @@
 define([
   'underscore',
-], function(_) {
-  
-  var Unit = function Unit(pid, x, y) {
+  'src/game/game'
+], function(_, Game) {
+
+  var Unit = function Unit(game, pid, x, y) {
+    this.game = game;
     this.pid = pid;
     this.x = x;
     this.y = y;
     this.dest_x = null;
     this.dest_y = null;
+    this.dead = null;
+    this.fight = null;
   };
 
   Unit.prototype.setDest = function(x, y) {
     this.dest_x = x;
     this.dest_y = y;
+  };
+
+  Unit.prototype.getDist = function(x, y) {
+    var delta_x = x - this.x;
+    var delta_y = y - this.y;
+    return Math.sqrt(delta_x * delta_x + delta_y * delta_y);
   };
 
   Unit.prototype.moveToDest = function() {
@@ -36,6 +46,38 @@ define([
       return true;
     }
     return false;
+  };
+
+  Unit.prototype.detectFight = function() {
+    if (this.fight === null) {
+      for (var i = 0; i < this.game.units.length; i++) {
+        var unit = this.game.units[i];
+        if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
+          this.getDist(unit.x, unit.y) < 10) {
+          this.dest_x = unit.x;
+          this.dest_y = unit.y;
+          unit.dest_x = this.x;
+          unit.dest_y = this.y;
+          this.fight = true;
+          unit.fight = true;
+          return;
+        }
+      }
+    }
+  };
+
+  Unit.prototype.detectDeath = function() {
+    if (this.dead === null) {
+      for (var i = 0; i < this.game.units.length; i++) {
+        var unit = this.game.units[i];
+        if (unit !== this && unit.dead === null && unit.pid !== this.pid &&
+          this.getDist(unit.x, unit.y) < 2) {
+          this.dead = true;
+          unit.dead = true;
+          return;
+        }
+      }
+    }
   };
 
   return Unit;
