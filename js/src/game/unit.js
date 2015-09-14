@@ -26,19 +26,34 @@ define([
     return Math.sqrt(delta_x * delta_x + delta_y * delta_y);
   };
 
+  Unit.prototype.defendPlanet = function() {
+    // defend against attackers
+    for (var i = 0; i < this.game.units.length; i++) {
+      var unit = this.game.units[i];
+      if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
+        unit.getDist(this.planet.x, this.planet.y) < (1.5 * this.planet.r)) {
+        this.setDest(unit.x, unit.y);
+        return;
+      }
+    }
+
+    // otherwise orbit or go to planet
+    if (this.getDist(this.planet.x, this.planet.y) < this.planet.r) {
+      if (this.dest_x === null || this.dest_y === null ||
+        this.getDist(this.dest_x, this.dest_y) < 5) {
+        var r = this.planet.r;
+        this.setDest(this.planet.x + (Math.random() * (-r - r) + r),
+          this.planet.y + Math.random() * (-r - r) + r);
+      }
+    } else {
+      this.setDest(this.planet.x, this.planet.y);
+    }
+  };
+
   Unit.prototype.detectPlanet = function() {
     if (this.planet !== null && this.fight === null) {
       if (this.planet.owner === this.pid) {
-        if (this.getDist(this.planet.x, this.planet.y) < this.planet.r) {
-          if (this.dest_x === null || this.dest_y === null ||
-            this.getDist(this.dest_x, this.dest_y) < 5) {
-            var r = this.planet.r;
-            this.setDest(this.planet.x + (Math.random() * (-r - r) + r),
-              this.planet.y + Math.random() * (-r - r) + r);
-          }
-        } else {
-          this.setDest(this.planet.x, this.planet.y);
-        }
+        this.defendPlanet();
       } else {
         this.setDest(this.planet.x, this.planet.y);
       }
@@ -87,20 +102,6 @@ define([
           this.fight = true;
           unit.fight = true;
           return;
-        }
-      }
-      // defend your planet
-      if (this.planet !== null && this.planet.owner === this.pid) {
-        for (var i = 0; i < this.game.units.length; i++) {
-          var unit = this.game.units[i];
-          if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
-            unit.getDist(this.planet.x, this.planet.y) < (1.5 * this.planet.r)) {
-            this.setDest(unit.x, unit.y);
-            //unit.setDest(this.x, this.y);
-            this.fight = true;
-            //unit.fight = true;
-            return;
-          }
         }
       }
     }

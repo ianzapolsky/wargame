@@ -9,7 +9,14 @@ define([
     this.r = r;
     this.owner = owner;
     this.hp = 10;
+    this.initCaptureState();
+  };
+
+  Planet.prototype.initCaptureState = function() {
     this.captureState = [];
+    for (var i = 0; i < this.game.players.length; i++) {
+      this.captureState[i] = 0;
+    }
   };
 
   Planet.prototype.isWithin = function(x, y) {
@@ -29,9 +36,22 @@ define([
     if (this.owner !== null) {
       if (unit.pid !== this.owner) {
         this.hp -= 1;
-        console.log(this.hp); 
         unit.dead = true;
       } 
+    } else {
+      for (var i = 0; i < this.game.players.length; i++) {
+        if (i + 1 === unit.pid) {
+          continue;
+        }
+        if (this.captureState[i] > 0) {
+          this.captureState[i] -= 1;
+          unit.dead = true;
+          this.updateState();
+          return;
+        }
+      }
+      this.captureState[unit.pid - 1] += 1;
+      unit.dead = true;
     }
     this.updateState();
   };
@@ -39,6 +59,13 @@ define([
   Planet.prototype.updateState = function() {
     if (this.hp === 0) {
       this.owner = null;
+    }
+    for (var i = 0; i < this.game.players.length; i++) {
+      if (this.captureState[i] === 10) {
+        this.owner = i + 1;
+        this.hp = 10;
+        this.initCaptureState();
+      }
     }
   };
 
