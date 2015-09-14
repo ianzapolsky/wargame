@@ -10,7 +10,9 @@ define([
 
   Player.prototype.flagSelected = function(x1, y1, x2, y2) {
     var _this = this;
+    this.selected = [];
     this.units.forEach(function(unit) {
+      unit.selected = false;
       if (unit.isWithin(x1, y1, x2, y2)) {
         unit.selected = true;
         _this.selected.push(unit);
