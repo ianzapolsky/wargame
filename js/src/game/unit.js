@@ -26,16 +26,22 @@ define([
     return Math.sqrt(delta_x * delta_x + delta_y * delta_y);
   };
 
-  Unit.prototype.orbitPlanet = function() {
-    if (this.planet.owner === this.pid) {
-      if (this.dest_x === null || this.dest_y === null ||
-        this.getDist(this.dest_x, this.dest_y) < 5) {
-        var r = this.planet.r;
-        this.setDest(this.planet.x + (Math.random() * (-r - r) + r),
-          this.planet.y + Math.random() * (-r - r) + r);
+  Unit.prototype.detectPlanet = function() {
+    if (this.planet !== null && this.fight === null) {
+      if (this.planet.owner === this.pid) {
+        if (this.getDist(this.planet.x, this.planet.y) < this.planet.r) {
+          if (this.dest_x === null || this.dest_y === null ||
+            this.getDist(this.dest_x, this.dest_y) < 5) {
+            var r = this.planet.r;
+            this.setDest(this.planet.x + (Math.random() * (-r - r) + r),
+              this.planet.y + Math.random() * (-r - r) + r);
+          }
+        } else {
+          this.setDest(this.planet.x, this.planet.y);
+        }
+      } else {
+        this.setDest(this.planet.x, this.planet.y);
       }
-    } else {
-      this.setDest(this.planet.x, this.planet.y);
     }
   };
 
@@ -52,9 +58,7 @@ define([
   };
 
   Unit.prototype.act = function() {
-    if (this.planet !== null) {
-      this.orbitPlanet();
-    }
+    this.detectPlanet();
     this.detectFight();
     this.moveToDest();
     this.detectDeath();
@@ -73,6 +77,7 @@ define([
 
   Unit.prototype.detectFight = function() {
     if (this.fight === null) {
+      // fight anyone near you
       for (var i = 0; i < this.game.units.length; i++) {
         var unit = this.game.units[i];
         if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
@@ -84,11 +89,30 @@ define([
           return;
         }
       }
+      // defend your planet
+      if (this.planet !== null && this.planet.owner === this.pid) {
+        for (var i = 0; i < this.game.units.length; i++) {
+          var unit = this.game.units[i];
+          if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
+            unit.getDist(this.planet.x, this.planet.y) < (1.5 * this.planet.r)) {
+            this.setDest(unit.x, unit.y);
+            //unit.setDest(this.x, this.y);
+            this.fight = true;
+            //unit.fight = true;
+            return;
+          }
+        }
+      }
     }
   };
 
   Unit.prototype.detectDeath = function() {
     if (this.dead === null) {
+      if (this.planet !== null && this.planet.owner !== this.owner &&
+        this.getDist(this.planet.x, this.planet.y) < 2) {
+        this.planet.merge(this);
+        return;
+      }
       for (var i = 0; i < this.game.units.length; i++) {
         var unit = this.game.units[i];
         if (unit !== this && unit.dead === null && unit.pid !== this.pid &&

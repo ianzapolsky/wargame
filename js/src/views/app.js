@@ -30,6 +30,7 @@ define([
 
       this.game = new Game();
       this.game.addPlanet(200, 200, 35, 1);
+      this.game.addPlanet(400, 100, 35, 1);
       this.game.addPlanet(400, 200, 35, 2);
 
       var _this = this;
