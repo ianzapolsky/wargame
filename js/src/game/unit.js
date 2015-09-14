@@ -54,10 +54,8 @@ define([
         var unit = this.game.units[i];
         if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
           this.getDist(unit.x, unit.y) < 10) {
-          this.dest_x = unit.x;
-          this.dest_y = unit.y;
-          unit.dest_x = this.x;
-          unit.dest_y = this.y;
+          this.setDest(unit.x, unit.y);
+          unit.setDest(this.x, this.y);
           this.fight = true;
           unit.fight = true;
           return;

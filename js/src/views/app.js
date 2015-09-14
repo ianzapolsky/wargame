@@ -32,6 +32,7 @@ define([
       this.game.addUnit(1, 40, 40);
       this.game.addUnit(1, 50, 50);
       this.game.addUnit(2, 100, 100);
+      this.game.addPlanet(200, 200, null);
   
       var _this = this;
       setInterval(function() {
@@ -76,6 +77,7 @@ define([
 
     render: function() {
       this.clearCanvas();
+      this.renderPlanets();
       this.renderUnits();
       this.renderInteraction();
     },
@@ -94,6 +96,16 @@ define([
         }
         _this.context.fillRect(unit.x,unit.y,2,2);
       });
+    },
+
+    renderPlanets: function() {
+      var _this = this;
+      this.game.planets.forEach(function(planet) {
+        _this.context.fillStyle = 'rgba(100,100,100,1)';
+        _this.context.beginPath();
+        _this.context.arc(planet.x, planet.y, 35, 0, 2 * Math.PI, false);
+        _this.context.fill();
+      });  
     },
 
     renderInteraction: function() {

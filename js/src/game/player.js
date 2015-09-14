@@ -22,8 +22,7 @@ define([
 
   Player.prototype.executeMove = function(x, y) {
     this.selected.forEach(function(unit) {
-      unit.dest_x = x;
-      unit.dest_y = y;
+      unit.setDest(x, y);
       unit.selected = false;
     });
     this.selected = [];
