@@ -26,17 +26,19 @@ define([
 
   Game.prototype.detectDeath = function(unit) {
     if (!unit.isDead) {
-      this.units.forEach(function(u) {
+      for (var i = 0; i < this.units.length; i++) {
+        var u = this.units[i];
         if (u === unit) {
-          return;
+          continue;
         } else {
           if (u.pid !== unit.pid &&
             (Math.abs(u.x - unit.x) < 2 && Math.abs(u.y - unit.y) < 2)) {
             unit.isDead = true;
             u.isDead = true;
+            return;
           }
         }
-      });
+      }
     }
   };
 
