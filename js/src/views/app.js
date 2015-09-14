@@ -110,6 +110,28 @@ define([
         _this.context.beginPath();
         _this.context.arc(planet.x, planet.y, planet.r, 0, 2 * Math.PI);
         _this.context.fill();
+
+        if (planet.owner !== null && planet.hp < 10) {
+          _this.context.fillStyle = '#FFF'; 
+          _this.context.fillRect(planet.x - planet.r, planet.y + planet.r + 5, 2 * planet.r, 8);
+          _this.context.fillStyle = 'rgb(255,0,0)';
+          _this.context.fillRect(planet.x - planet.r + 1, planet.y + planet.r + 6, (2 * planet.r) * (planet.hp / 10) - 1, 6);
+        } else if (planet.owner === null) {
+          for (var i = 0; i < planet.captureState.length; i++) {
+            if (planet.captureState[i] > 0) {
+              var pid = i + 1;  
+              var num = planet.captureState[i];
+              _this.context.fillStyle = '#FFF'; 
+              _this.context.fillRect(planet.x - planet.r, planet.y + planet.r + 5, 2 * planet.r, 8);
+              if (pid === 1) {
+                _this.context.fillStyle = 'rgb(0,0,255)';
+              } else if (pid === 2) {
+                _this.context.fillStyle = 'rgb(255,0,0)';
+              }
+              _this.context.fillRect(planet.x - planet.r + 1, planet.y + planet.r + 6, (2 * planet.r) * (num / 10) - 1, 6);
+            }
+          }
+        }
       });
     },
 
