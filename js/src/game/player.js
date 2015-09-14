@@ -1,8 +1,10 @@
 define([
   'underscore',
-], function(_) {
+  'src/game/game',
+], function(_, Game) {
 
-  var Player = function Player(pid) {
+  var Player = function Player(game, pid) {
+    this.game = game;
     this.pid = pid;
     this.selected = [];
     this.units = [];
@@ -21,6 +23,17 @@ define([
   };
 
   Player.prototype.executeMove = function(x, y) {
+    for (var i = 0; i < this.game.planets.length; i++) {
+      var planet = this.game.planets[i]; 
+      if (planet.isWithin(x, y)) {
+        this.selected.forEach(function(unit) {
+          unit.planet = planet;
+          unit.selected = false;
+        });
+        this.selected = []
+        return;
+      }
+    }
     this.selected.forEach(function(unit) {
       unit.setDest(x, y);
       unit.planet = null;

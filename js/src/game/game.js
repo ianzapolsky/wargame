@@ -7,7 +7,7 @@ define([
   
   var Game = function Game() {
     this.units = [];
-    this.players = [new Player(1), new Player(2)];
+    this.players = [new Player(this, 1), new Player(this, 2)];
     this.planets = [];
     this.tick = 0;
   };
@@ -18,11 +18,8 @@ define([
     this.players[pid - 1].units.push(u);
   };
 
-  Game.prototype.addPlanet = function(x, y, owner) {
-    var p = new Planet(this, x, y);
-    if (owner) {
-      p.owner = owner;
-    }
+  Game.prototype.addPlanet = function(x, y, r, owner) {
+    var p = new Planet(this, x, y, r, owner);
     this.planets.push(p);
   };
 

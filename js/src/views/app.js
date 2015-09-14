@@ -27,11 +27,11 @@ define([
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
       this.context = this.canvas.getContext('2d');
-      
+
       this.game = new Game();
-      this.game.addPlanet(200, 200, 1);
-      this.game.addPlanet(400, 200, 2);
-  
+      this.game.addPlanet(200, 200, 35, 1);
+      this.game.addPlanet(400, 200, 35, 2);
+
       var _this = this;
       setInterval(function() {
         _this.game.doTick();
@@ -50,7 +50,7 @@ define([
       this.down_x = e.pageX;
       this.down_y = e.pageY;
     },
-    
+
     handleMousemove: function(e) {
       this.curr_x = e.clientX;
       this.curr_y = e.clientY;
@@ -61,7 +61,7 @@ define([
         Math.abs(e.clientY - this.down_y) < 3) {
         this.handleClick(e);
       } else {
-        this.game.players[0].flagSelected(this.down_x, this.down_y, 
+        this.game.players[0].flagSelected(this.down_x, this.down_y,
           e.clientX, e.clientY);
       }
       this.mousedown = false;
@@ -70,7 +70,7 @@ define([
     },
 
     handleClick: function(e) {
-      this.game.players[0].executeMove(e.clientX, e.clientY);  
+      this.game.players[0].executeMove(e.clientX, e.clientY);
     },
 
     render: function() {
@@ -107,9 +107,9 @@ define([
             _this.context.fillStyle = 'rgba(100,100,100,1)';
         }
         _this.context.beginPath();
-        _this.context.arc(planet.x, planet.y, 35, 0, 2 * Math.PI, false);
+        _this.context.arc(planet.x, planet.y, planet.r, 0, 2 * Math.PI);
         _this.context.fill();
-      });  
+      });
     },
 
     renderInteraction: function() {
@@ -122,13 +122,12 @@ define([
           (this.curr_x - this.down_x), (this.curr_y - this.down_y));
       }
     },
-        
+
     clearCanvas: function() {
       this.context.fillStyle = '#000';
       this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-  
   });
 
   return AppView;

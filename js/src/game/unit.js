@@ -27,12 +27,15 @@ define([
   };
 
   Unit.prototype.orbitPlanet = function() {
-    if (this.dest_x === null || this.dest_y === null ||
-      this.getDist(this.dest_x, this.dest_y) < 5) {
-      var range = 40; 
-      var x_var = Math.random() * (-range - range) + range;
-      var y_var = Math.random() * (-range - range) + range;
-      this.setDest(this.planet.x + x_var, this.planet.y + y_var);
+    if (this.planet.owner === this.pid) {
+      if (this.dest_x === null || this.dest_y === null ||
+        this.getDist(this.dest_x, this.dest_y) < 5) {
+        var r = this.planet.r;
+        this.setDest(this.planet.x + (Math.random() * (-r - r) + r),
+          this.planet.y + Math.random() * (-r - r) + r);
+      }
+    } else {
+      this.setDest(this.planet.x, this.planet.y);
     }
   };
 
@@ -49,10 +52,10 @@ define([
   };
 
   Unit.prototype.act = function() {
-    this.detectFight(); 
     if (this.planet !== null) {
       this.orbitPlanet();
     }
+    this.detectFight();
     this.moveToDest();
     this.detectDeath();
   };
