@@ -42,6 +42,17 @@ define([
     this.selected = [];
   };
 
+  Player.prototype.computerMove = function() {
+    var _this = this;
+    //this.units.forEach(function(u) {
+    //  _this.game.planets.forEach(function(p) {
+    //    if (p.owner !== _this.pid) {
+    //      u.planet = p;
+    //    }
+    //  });
+    //});
+  };
+
   return Player;
 
 });

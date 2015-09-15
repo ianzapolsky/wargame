@@ -71,9 +71,9 @@ define([
 
   Planet.prototype.color = function() {
     if (this.owner === 1) {
-      return 'rgba(100,149,237,1)'; 
+      return 'rgba(70,70,200,1)'; 
     } else if (this.owner === 2) {
-      return 'rgba(255,69,0,1)';
+      return 'rgba(172,0,0,1)';
     } else if (this.owner === null) {
       return 'rgba(100,100,100,1)'; 
     }

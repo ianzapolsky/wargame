@@ -34,8 +34,8 @@ define([
 
       var _this = this;
       setInterval(function() {
-        _this.game.doTick();
         _this.render();
+        _this.game.doTick();
       }, 50);
     },
 

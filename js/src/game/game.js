@@ -32,15 +32,28 @@ define([
 
   Game.prototype.doTick = function() {
     this.tick += 1;
+
+    this.removeDead();
+    
+    // add units
     if (this.tick % 50 === 0) {
       this.planets.forEach(function(planet) {
         planet.addUnit();
       });
     }
+
+    // execute computer moves
+    this.players.forEach(function(player) {
+      if (player.pid === 1) {
+        return;
+      }
+      player.computerMove();
+    });
+
+    // move units
     this.units.forEach(function(unit) {
       unit.act();
     });
-    this.removeDead();
   };
 
   Game.prototype.removeDead = function() {

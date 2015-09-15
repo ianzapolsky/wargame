@@ -37,6 +37,10 @@ define([
     },
 
     drawUnit: function(ctx, u) {
+      if (u.dead === true) {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(u.x-2, u.y-2, 5, 5);
+      }
       if (u.pid === 1 && u.selected === true) {
         ctx.fillStyle = u.selectedColor();
         ctx.beginPath();
