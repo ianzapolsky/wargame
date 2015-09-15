@@ -13,6 +13,7 @@ define([
     this.dest_y = null;
     this.dead = null;
     this.fight = null;
+    this.repair = null;
   };
 
   Unit.prototype.setDest = function(x, y) {
@@ -27,6 +28,12 @@ define([
   };
 
   Unit.prototype.defendPlanet = function() {
+    // if repairing, go repair
+    if (this.repair !== null && this.repair.hp < 10) {
+      this.setDest(this.repair.x, this.repair.y);
+      return;
+    }
+
     // defend against attackers
     for (var i = 0; i < this.game.units.length; i++) {
       var unit = this.game.units[i];

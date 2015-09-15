@@ -27,8 +27,13 @@ define([
       var planet = this.game.planets[i]; 
       if (planet.isWithin(x, y)) {
         this.selected.forEach(function(unit) {
-          unit.planet = planet;
-          unit.selected = false;
+          if (unit.planet === planet && planet.owner === unit.pid) {
+            unit.repair = planet;
+          } else {
+            unit.repair = null
+            unit.planet = planet;
+            unit.selected = false;
+          }
         });
         this.selected = []
         return;
@@ -36,6 +41,7 @@ define([
     }
     this.selected.forEach(function(unit) {
       unit.setDest(x, y);
+      unit.repair = null
       unit.planet = null;
       unit.selected = false;
     });
@@ -44,13 +50,13 @@ define([
 
   Player.prototype.computerMove = function() {
     var _this = this;
-    //this.units.forEach(function(u) {
-    //  _this.game.planets.forEach(function(p) {
-    //    if (p.owner !== _this.pid) {
-    //      u.planet = p;
-    //    }
-    //  });
-    //});
+    this.units.forEach(function(u) {
+      _this.game.planets.forEach(function(p) {
+        if (p.owner !== _this.pid) {
+          u.planet = p;
+        }
+      });
+    });
   };
 
   return Player;

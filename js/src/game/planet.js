@@ -37,7 +37,12 @@ define([
       if (unit.pid !== this.owner) {
         this.hp -= 1;
         unit.dead = true;
-      } 
+      } else {
+        if (unit.repair === this) {
+          this.hp += 1;
+          unit.dead = true;
+        }
+      }
     } else {
       for (var i = 0; i < this.game.players.length; i++) {
         if (i + 1 === unit.pid) {
