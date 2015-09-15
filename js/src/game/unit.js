@@ -126,6 +126,20 @@ define([
     }
   };
 
+  Unit.prototype.color = function() {
+    if (this.pid === 1) {
+      return 'rgba(21,137,255,1)'; 
+    } else if (this.pid === 2) {
+      return 'rgba(247,13,26,1)';
+    } 
+  };
+
+  Unit.prototype.selectedColor = function() {
+    if (this.pid === 1) {
+      return 'rgba(21,137,255,.5)'; 
+    }
+  };
+
   return Unit;
 
 });

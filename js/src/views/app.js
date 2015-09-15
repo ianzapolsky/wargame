@@ -86,13 +86,13 @@ define([
       this.game.units.forEach(function(unit) {
         if (unit.pid === 1) {
           if (unit.selected) {
-            _this.context.fillStyle = 'rgba(21, 137, 255, .5)';
-            _this.context.fillRect(unit.x-2,unit.y-2,6,6);
+            _this.context.fillStyle = unit.selectedColor();
+            _this.context.beginPath();
+            _this.context.arc(unit.x, unit.y, 6, 0, 2 * Math.PI);
+            _this.context.fill();
           }
-          _this.context.fillStyle = '#1589FF';
-        } else if (unit.pid === 2) {
-          _this.context.fillStyle = '#F70D1A';
         }
+        _this.context.fillStyle = unit.color();
         _this.context.fillRect(unit.x,unit.y,2,2);
       });
     },
@@ -100,13 +100,7 @@ define([
     renderPlanets: function() {
       var _this = this;
       this.game.planets.forEach(function(planet) {
-        if (planet.owner === 1) {
-            _this.context.fillStyle = '#6495ED';
-        } else if (planet.owner === 2) {
-            _this.context.fillStyle = '#FF4500';
-        } else {
-            _this.context.fillStyle = 'rgba(100,100,100,1)';
-        }
+        _this.context.fillStyle = planet.color();
         _this.context.beginPath();
         _this.context.arc(planet.x, planet.y, planet.r, 0, 2 * Math.PI);
         _this.context.fill();
