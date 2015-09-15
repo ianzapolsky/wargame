@@ -11,6 +11,13 @@ define([
     this.planets = [];
     this.tick = 0;
   };
+  
+  Game.prototype.init = function() {
+    this.addPlanet(200,200,35,1);
+    this.addPlanet(200,400,35,1);
+    this.addPlanet(400,200,35,2);
+    this.addPlanet(400,400,35,2);
+  };
 
   Game.prototype.addUnit = function(pid, x, y, planet) {
     var u = new Unit(this, pid, x, y, planet);
