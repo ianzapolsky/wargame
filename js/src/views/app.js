@@ -33,7 +33,8 @@ define([
       this.game.init();
 
       var _this = this;
-      setInterval(function() {
+      var clock = setInterval(function() {
+        _this.game.detectEnd(clock);
         _this.render();
         _this.game.doTick();
       }, 50);

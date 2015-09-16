@@ -116,11 +116,13 @@ define([
 
   Unit.prototype.detectDeath = function() {
     if (this.dead === null) {
-      if (this.planet !== null && this.planet.owner !== this.owner &&
+      // attack enemy planet or repair own planet
+      if (this.planet !== null &&
         this.getDist(this.planet.x, this.planet.y) < 2) {
         this.planet.merge(this);
         return;
       }
+      // fight enemy unit
       for (var i = 0; i < this.game.units.length; i++) {
         var unit = this.game.units[i];
         if (unit !== this && unit.dead === null && unit.pid !== this.pid &&
@@ -138,7 +140,9 @@ define([
       return 'rgba(50,150,255,1)'; 
     } else if (this.pid === 2) {
       return 'rgba(255,50,150,1)';
-    } 
+    } else if (this.pid === 3) {
+      return 'rgba(255,255,255,1)';
+    }
   };
 
   Unit.prototype.selectedColor = function() {

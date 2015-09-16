@@ -38,7 +38,7 @@ define([
         this.hp -= 1;
         unit.dead = true;
       } else {
-        if (unit.repair === this) {
+        if (unit.repair === this && this.hp < 10) {
           this.hp += 1;
           unit.dead = true;
         }
@@ -79,6 +79,8 @@ define([
       return 'rgba(70,70,200,1)'; 
     } else if (this.owner === 2) {
       return 'rgba(172,0,0,1)';
+    } else if (this.owner === 3) {
+      return 'rgba(50,170,50,1)';
     } else if (this.owner === null) {
       return 'rgba(100,100,100,1)'; 
     }

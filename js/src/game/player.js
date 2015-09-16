@@ -29,6 +29,7 @@ define([
         this.selected.forEach(function(unit) {
           if (unit.planet === planet && planet.owner === unit.pid) {
             unit.repair = planet;
+            unit.selected = false;
           } else {
             unit.repair = null
             unit.planet = planet;
