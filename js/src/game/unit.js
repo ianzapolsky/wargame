@@ -11,7 +11,7 @@ define([
     this.planet = planet;
     this.dest_x = null;
     this.dest_y = null;
-    this.dead = null;
+    this.dead = false;
     this.fight = null;
     this.repair = null;
   };
@@ -115,7 +115,7 @@ define([
   };
 
   Unit.prototype.detectDeath = function() {
-    if (this.dead === null) {
+    if (this.dead === false) {
       // attack enemy planet or repair own planet
       if (this.planet !== null &&
         this.getDist(this.planet.x, this.planet.y) < 2) {

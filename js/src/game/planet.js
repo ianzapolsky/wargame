@@ -8,6 +8,7 @@ define([
     this.y = y;
     this.r = r;
     this.owner = owner;
+    this.units = [];
     this.hp = 10;
     this.initCaptureState();
   };
@@ -22,10 +23,10 @@ define([
   Planet.prototype.isWithin = function(x, y) {
     if (Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)) < this.r) {
       return true;
-    } 
+    }
     return false;
   };
-    
+
   Planet.prototype.addUnit = function() {
     if (this.owner) {
       this.game.addUnit(this.owner, this.x, this.y, this);
@@ -45,7 +46,7 @@ define([
       }
     } else {
       for (var i = 0; i < this.game.players.length; i++) {
-        if (i + 1 === unit.pid) {
+        if (unit.pid === i + 1) {
           continue;
         }
         if (this.captureState[i] > 0) {
@@ -76,16 +77,16 @@ define([
 
   Planet.prototype.color = function() {
     if (this.owner === 1) {
-      return 'rgba(70,70,200,1)'; 
+      return 'rgba(70,70,200,1)';
     } else if (this.owner === 2) {
       return 'rgba(172,0,0,1)';
     } else if (this.owner === 3) {
       return 'rgba(50,170,50,1)';
     } else if (this.owner === null) {
-      return 'rgba(100,100,100,1)'; 
+      return 'rgba(100,100,100,1)';
     }
   };
-      
+
   return Planet;
 
 });

@@ -23,6 +23,26 @@ define([
   };
 
   Player.prototype.executeMove = function(x, y) {
+
+    // if the player has no selected units 
+    if (this.selected.length === 0) {
+      for (var i = 0; i < this.game.planets.length; i++) {
+        if (this.game.planets[i].owner === this.pid) {
+          var planet = this.game.planets[i];
+          if (planet.isWithin(x, y)) {
+            for (var j = 0; j < this.units.length; j++) {
+              if (this.units[j].planet === planet) {
+                this.units[j].selected = true;
+                this.selected.push(this.units[j]);
+              }
+            }
+            break;
+          }
+        }
+      }
+      return;
+    } 
+
     for (var i = 0; i < this.game.planets.length; i++) {
       var planet = this.game.planets[i]; 
       if (planet.isWithin(x, y)) {
@@ -33,6 +53,7 @@ define([
           } else {
             unit.repair = null
             unit.planet = planet;
+            planet.units.push(unit);
             unit.selected = false;
           }
         });

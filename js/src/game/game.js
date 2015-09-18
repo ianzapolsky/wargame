@@ -12,25 +12,23 @@ define([
     this.tick = 0;
   };
   
+  // place planets
   Game.prototype.init = function() {
     this.addPlanet(200,200,35,1);
     this.addPlanet(200,400,35,1);
-    this.addPlanet(200,600,35,1);
     this.addPlanet(400,200,35,2);
-    //this.addPlanet(400,400,35,2);
-    //this.addPlanet(600,200,35,3);
-    //this.addPlanet(600,400,35,3);
+    this.addPlanet(400,400,35,2);
   };
 
   Game.prototype.addUnit = function(pid, x, y, planet) {
     var u = new Unit(this, pid, x, y, planet);
     this.units.push(u);
+    planet.units.push(u);
     this.players[pid - 1].units.push(u);
   };
 
   Game.prototype.addPlanet = function(x, y, r, owner) {
-    var p = new Planet(this, x, y, r, owner);
-    this.planets.push(p);
+    this.planets.push(new Planet(this, x, y, r, owner));
   };
 
   Game.prototype.doTick = function() {
@@ -39,7 +37,7 @@ define([
     this.removeDead();
     
     // add units
-    if (this.tick % 50 === 0) {
+    if (this.tick % 40 === 0) {
       this.planets.forEach(function(planet) {
         planet.addUnit();
       });
@@ -47,10 +45,9 @@ define([
 
     // execute computer moves
     this.players.forEach(function(player) {
-      if (player.pid === 1) {
-        return;
+      if (player.pid !== 1) {
+        player.computerMove();
       }
-      player.computerMove();
     });
 
     // move units
@@ -61,7 +58,12 @@ define([
 
   Game.prototype.removeDead = function() {
     this.units = this.units.filter(function(unit) {
-      return unit.dead === null;
+      return unit.dead === false;
+    });
+    this.planets.forEach(function(p) {
+      p.units = p.units.filter(function(unit) {
+        return unit.dead === false;
+      });
     });
   };
 
