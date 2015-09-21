@@ -125,7 +125,7 @@ define([
       // fight enemy unit
       for (var i = 0; i < this.game.units.length; i++) {
         var unit = this.game.units[i];
-        if (unit !== this && unit.dead === null && unit.pid !== this.pid &&
+        if (unit !== this && unit.dead === false && unit.pid !== this.pid &&
           this.getDist(unit.x, unit.y) < 2) {
           this.dead = true;
           unit.dead = true;
