@@ -24,7 +24,7 @@ define([
 
   Player.prototype.executeMove = function(x, y) {
 
-    // if the player has no selected units 
+    // if the player has no selected units
     if (this.selected.length === 0) {
       for (var i = 0; i < this.game.planets.length; i++) {
         if (this.game.planets[i].owner === this.pid) {
@@ -41,10 +41,10 @@ define([
         }
       }
       return;
-    } 
+    }
 
     for (var i = 0; i < this.game.planets.length; i++) {
-      var planet = this.game.planets[i]; 
+      var planet = this.game.planets[i];
       if (planet.isWithin(x, y)) {
         this.selected.forEach(function(unit) {
           if (unit.planet === planet && planet.owner === unit.pid) {
