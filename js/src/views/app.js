@@ -100,6 +100,7 @@ define([
         this.context.fillStyle = 'rgba(245,245,245,.3)';
         this.context.fillRect(this.down_x, this.down_y,
           (this.curr_x - this.down_x), (this.curr_y - this.down_y));
+        this.context.lineWidth = 1;
         this.context.strokeStyle = 'rgba(255,255,255,.7)';
         this.context.strokeRect(this.down_x, this.down_y,
           (this.curr_x - this.down_x), (this.curr_y - this.down_y));

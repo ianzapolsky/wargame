@@ -29,7 +29,7 @@ define([
 
   Unit.prototype.defendPlanet = function() {
     // if repairing, go repair
-    if (this.repair !== null && this.repair.hp < 10) {
+    if (this.repair !== null && (this.repair.hp < 10 || this.repair.size < 3)) {
       this.setDest(this.repair.x, this.repair.y);
       return;
     }

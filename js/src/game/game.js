@@ -14,10 +14,10 @@ define([
   
   // place planets
   Game.prototype.init = function() {
-    this.addPlanet(200,200,35,1);
-    this.addPlanet(200,400,35,1);
-    this.addPlanet(400,200,35,2);
-    this.addPlanet(400,400,35,2);
+    this.addPlanet(200,200,3,1);
+    this.addPlanet(200,400,3,1);
+    this.addPlanet(400,200,3,2);
+    this.addPlanet(400,400,3,2);
   };
 
   Game.prototype.addUnit = function(pid, x, y, planet) {
@@ -27,8 +27,8 @@ define([
     this.players[pid - 1].units.push(u);
   };
 
-  Game.prototype.addPlanet = function(x, y, r, owner) {
-    this.planets.push(new Planet(this, x, y, r, owner));
+  Game.prototype.addPlanet = function(x, y, r, maxSize, owner) {
+    this.planets.push(new Planet(this, x, y, r, maxSize, owner));
   };
 
   Game.prototype.doTick = function() {
