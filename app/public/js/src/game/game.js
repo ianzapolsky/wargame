@@ -7,11 +7,11 @@ define([
   
   var Game = function Game() {
     this.units = [];
-    this.players = [new Player(this, 1), new Player(this, 2), new Player(this, 3)];
+    this.players = [new Player(this, 1), new Player(this, 2)];
     this.planets = [];
     this.tick = 0;
   };
-  
+
   // place planets
   Game.prototype.init = function() {
     this.addPlanet(200,200,3,1);
@@ -35,7 +35,7 @@ define([
     this.tick += 1;
 
     this.removeDead();
-    
+
     // add units
     if (this.tick % 40 === 0) {
       this.planets.forEach(function(planet) {

@@ -39,6 +39,15 @@ define([
         _this.render();
         _this.game.doTick();
         _this.game.detectEnd(clock);
+
+        _this.socket.emit('game data', JSON.stringify(_this.game.units, function(k, v) {
+          if (k === 'units') {
+            return null;
+          } else {
+            return v;
+          }
+        }));
+
       }, 50);
     },
 
