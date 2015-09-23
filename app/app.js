@@ -5,10 +5,16 @@ var io = require('socket.io')(http);
 
 app.use(express.static('public'));
 
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
   console.log('a user connected');
+
+  socket.on('game data', function(data) {
+    console.log(data);
+  });
+
 });
 
-http.listen(8000, function(){
+
+http.listen(8000, function() {
   console.log('listening on port 8000');
 });

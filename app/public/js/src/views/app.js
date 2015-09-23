@@ -11,7 +11,7 @@ define([
 
   var AppView = Backbone.View.extend({
 
-    el: 'body', 
+    el: 'body',
 
     canvas: null,
     context: null,
@@ -40,6 +40,14 @@ define([
         _this.game.doTick();
         _this.game.detectEnd(clock);
       }, 50);
+
+      setInterval(function() {
+        var units = _this.game.units.map(function(unit) {
+          return {'x': unit.x, 'y': unit.y};
+        });
+        _this.socket.emit('game data', units);
+      }, 500);
+
     },
 
     events: {
