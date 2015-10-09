@@ -5,11 +5,24 @@ var io = require('socket.io')(http);
 
 app.use(express.static('public'));
 
+var players = 0;
+
 io.on('connection', function(socket) {
-  console.log('a user connected');
+
+  players += 1;
+  console.log('player ' + players + ' connected');
+  if (players === 2) {
+    io.emit('game start');
+  }
 
   socket.on('game data', function(data) {
     console.log(data);
+  });
+
+  socket.on('disconnect', function() {
+    console.log('player ' + players + ' disconnected');
+    io.emit('user disconnect');
+    players -= 1;
   });
 
 });

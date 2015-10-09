@@ -17,6 +17,7 @@ define([
     context: null,
 
     game: null,
+    player: null,
 
     mousedown: false,
     down_x: null,
@@ -34,19 +35,23 @@ define([
       this.game = new Game();
       this.game.init();
 
-      var _this = this;
-      var clock = setInterval(function() {
-        _this.render();
-        _this.game.doTick();
-        _this.game.detectEnd(clock);
-      }, 50);
+      this.clock = setInterval(function() {
+          _this.
 
-      setInterval(function() {
-        var units = _this.game.units.map(function(unit) {
-          return {'x': unit.x, 'y': unit.y};
-        });
-        _this.socket.emit('game data', units);
-      }, 500);
+      //this.socket.on('game data', function(data) {
+      //});
+
+      //this.socket.on('game start', function() {
+      //  _this.clock = setInterval(function() {
+      //    _this.render();
+      //    //_this.game.doTick();
+      //    //_this.game.detectEnd(clock);
+      //  }, 50);
+
+      //  setInterval(function() {
+      //    _this.socket.emit('game data', JSON.stringify(_this.units));
+      //  }, 500);
+      //});
 
     },
 
@@ -86,16 +91,19 @@ define([
 
     render: function() {
       this.clearCanvas();
-      this.renderPlanets();
+      //this.renderPlanets();
       this.renderUnits();
-      this.renderInteraction();
+      //this.renderInteraction();
     },
 
     renderUnits: function() {
       var _this = this;
-      this.game.units.forEach(function(unit) {
+      this.units.forEach(function(unit) {
         Utils.drawUnit(_this.context, unit);
       });
+      //this.game.units.forEach(function(unit) {
+      //  Utils.drawUnit(_this.context, unit);
+      //});
     },
 
     renderPlanets: function() {
