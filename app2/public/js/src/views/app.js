@@ -37,41 +37,28 @@ define([
         console.log('wait for player');
       });
 
-      this.socket.on('hello', function(msg) {
-        console.log(msg);
-      });
-
       this.socket.on('set player', function(pid) {
         _this.pid = pid;
       });
 
+      this.socket.on('game data', function(data) {
+        _this.game.units = [];
+        data.forEach(function(unit) {
+          _this.game.units.push(new Unit(_this.game, unit));
+        });
+      });
+
       this.socket.on('game start', function(data) {
         _this.game = new Game();
-        _this.game.units = data.units;
-
+        data.units.forEach(function(unit) {
+          _this.game.units.push(new Unit(_this.game, unit));
+        });
 
         _this.clock = setInterval(function() {
           _this.render();
-          //_this.game.doTick();
+          _this.game.doTick();
         }, 50);
       });
-
-      //this.socket.on('game data', function(data) {
-      //  _this.game.units = data;
-      //});
-
-      //this.socket.on('game start', function() {
-      //  console.log('game start');
-
-      //  _this.clock = setInterval(function() {
-      //    _this.render();
-      //    _this.game.doTick();
-      //  }, 50);
-
-      //  setInterval(function() {
-      //    _this.socket.emit('game data', JSON.stringify(_this.units));
-      //  }, 500);
-      //});
 
     },
 
@@ -106,8 +93,29 @@ define([
     },
 
     handleClick: function(e) {
+      var _this = this;
       this.game.players[this.pid - 1].executeMove(e.clientX, e.clientY);
-      debugger;
+
+      this.emitData();
+    },
+
+    emitData: function() {
+      var unitsData = [];
+      this.game.units.forEach(function(unit) {
+        unitsData.push({
+          id:unit.id,
+          pid:unit.pid,
+          x:unit.x,
+          y:unit.y,
+          dest_x:unit.dest_x,
+          dest_y:unit.dest_y,
+          planet:unit.planet, 
+          dead:unit.dead,
+          fight:unit.fight,
+          repair:unit.repair
+        });
+      });
+      this.socket.emit('game data', unitsData);
     },
 
     render: function() {

@@ -7,7 +7,10 @@ var Unit = function(id, pid, x, y) {
   this.dest_x = null;
   this.dest_y = null;
 
-  this.computeColor();
+  this.planet = null;
+  this.fight = false;
+  this.repair = false;
+  this.dead = false;
 };
 
 Unit.prototype.setDst = function(x, y) {
@@ -24,31 +27,6 @@ Unit.prototype.goToDst = function() {
       this.x += (delta_x / distance);
       this.y += (delta_y / distance);
     }
-  }
-};
-
-Unit.prototype.computeColor = function() {
-  this.color = this.color();
-  this.selectedColor = this.selectedColor();
-};
-
-Unit.prototype.color = function() {
-  if (this.pid === 1) {
-    return 'rgba(50,150,255,1)'; 
-  } else if (this.pid === 2) {
-    return 'rgba(255,50,150,1)';
-  } else if (this.pid === 3) {
-    return 'rgba(255,255,255,1)';
-  }
-};
-
-Unit.prototype.selectedColor = function() {
-  if (this.pid === 1) {
-    return 'rgba(21,137,255,.5)'; 
-  } else if (this.pid === 2) {
-    return 'rgba(150,150,150,.5)';
-  } else if (this.pid === 3) {
-    return 'rgba(0,255,0,.5)';
   }
 };
 

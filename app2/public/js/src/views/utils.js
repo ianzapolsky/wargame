@@ -56,12 +56,12 @@ define([
         ctx.fillRect(u.x-2, u.y-2, 5, 5);
       }
       if (u.selected === true) {
-        ctx.fillStyle = u.selectedColor;
+        ctx.fillStyle = u.selectedColor();
         ctx.beginPath();
         ctx.arc(u.x, u.y, 6, 0, 2 * Math.PI);
         ctx.fill();
       }
-      ctx.fillStyle = u.color; 
+      ctx.fillStyle = u.color(); 
       ctx.fillRect(u.x, u.y, 2, 2);
     }
 

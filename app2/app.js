@@ -37,6 +37,7 @@ var runGame = function(nsp) {
     }
 
     socket.on('game data', function(data) {
+      console.log(data);
       nsp.emit('game data', data);
     });
 

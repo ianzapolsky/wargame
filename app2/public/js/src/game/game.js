@@ -37,18 +37,18 @@ define([
     this.removeDead();
     
     // add units
-    if (this.tick % 40 === 0) {
-      this.planets.forEach(function(planet) {
-        planet.addUnit();
-      });
-    }
+    //if (this.tick % 40 === 0) {
+    //  this.planets.forEach(function(planet) {
+    //    planet.addUnit();
+    //  });
+    //}
 
     // execute computer moves
-    this.players.forEach(function(player) {
-      if (player.pid !== 1) {
-        player.computerMove();
-      }
-    });
+    //this.players.forEach(function(player) {
+    //  if (player.pid !== 1) {
+    //    player.computerMove();
+    //  }
+    //});
 
     // move units
     this.units.forEach(function(unit) {
@@ -58,13 +58,13 @@ define([
 
   Game.prototype.removeDead = function() {
     this.units = this.units.filter(function(unit) {
-      return unit.dead === false;
+      return unit.dead === null || unit.dead === false;
     });
-    this.planets.forEach(function(p) {
-      p.units = p.units.filter(function(unit) {
-        return unit.dead === false;
-      });
-    });
+    //this.planets.forEach(function(p) {
+    //  p.units = p.units.filter(function(unit) {
+    //    return unit.dead === false;
+    //  });
+    //});
   };
 
   Game.prototype.detectEnd = function(clock) {

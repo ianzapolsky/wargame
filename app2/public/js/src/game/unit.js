@@ -3,13 +3,18 @@ define([
   'src/game/game'
 ], function(_, Game) {
 
-  var Unit = function Unit(pid, x, y) {
-    this.pid = pid;
-    this.x = x;
-    this.y = y;
-    this.dead = false;
-    this.fight = null;
-    this.repair = null;
+  var Unit = function Unit(game, unit) {
+    this.game = game;
+    this.id = unit.id;
+    this.pid = unit.pid;
+    this.x = unit.x;
+    this.y = unit.y;
+    this.dest_x = unit.dest_x;
+    this.dest_y = unit.dest_y;
+    this.planet = unit.planet;
+    this.dead = unit.dead;
+    this.fight = unit.fight;
+    this.repair = unit.repair;
   };
 
   Unit.prototype.setDest = function(x, y) {
@@ -77,7 +82,7 @@ define([
 
   Unit.prototype.act = function() {
     //this.detectPlanet();
-    //this.detectFight();
+    this.detectFight();
     this.moveToDest();
     this.detectDeath();
   };
@@ -144,6 +149,10 @@ define([
   Unit.prototype.selectedColor = function() {
     if (this.pid === 1) {
       return 'rgba(21,137,255,.5)'; 
+    } else if (this.pid === 2) {
+      return 'rgba(150,150,150,.5)';
+    } else if (this.pid === 3) {
+      return 'rgba(0,255,0,.5)';
     }
   };
 

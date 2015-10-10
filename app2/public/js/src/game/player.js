@@ -17,23 +17,12 @@ define([
       if (unit.pid === _this.pid) {
         unit.selected = false;
         
-        if (isWithin(unit.x, unit.y, x1, y1, x2, y2)) {
+        if (unit.isWithin(x1, y1, x2, y2)) {
           unit.selected = true;
           _this.selected.push(unit);
         }
       }
     });
-  };
-
-  isWithin = function(x, y, x1, y1, x2, y2) {
-    var ax1 = Math.min(x1, x2);
-    var ax2 = Math.max(x1, x2);
-    var ay1 = Math.min(y1, y2);
-    var ay2 = Math.max(y1, y2);
-    if ((x >= ax1 && x <= ax2) && (y >= ay1 && y <= ay2)) {
-      return true;
-    }
-    return false;
   };
 
   Player.prototype.executeMove = function(x, y) {
@@ -76,8 +65,7 @@ define([
       }
     }
     this.selected.forEach(function(unit) {
-      unit.dest_x = x;
-      unit.dest_y = y;
+      unit.setDest(x, y);
       unit.repair = null
       unit.planet = null;
       unit.selected = false;
