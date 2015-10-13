@@ -38,7 +38,7 @@ define([
     // defend against attackers
     for (var i = 0; i < this.game.units.length; i++) {
       var unit = this.game.units[i];
-      if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
+      if (unit !== this && unit.fight !== null && this.pid !== unit.pid &&
         unit.getDist(this.planet.x, this.planet.y) < (1.5 * this.planet.r)) {
         this.setDest(unit.x, unit.y);
         return;
@@ -59,7 +59,7 @@ define([
   };
 
   Unit.prototype.detectPlanet = function() {
-    if (this.planet !== null && this.fight === null) {
+    if (this.planet !== null && this.fight !== true) {
       if (this.planet.owner === this.pid) {
         this.defendPlanet();
       } else {
@@ -81,7 +81,7 @@ define([
   };
 
   Unit.prototype.act = function() {
-    //this.detectPlanet();
+    this.detectPlanet();
     this.detectFight();
     this.moveToDest();
     this.detectDeath();
@@ -99,12 +99,11 @@ define([
   };
 
   Unit.prototype.detectFight = function() {
-    if (this.fight === null) {
+    if (this.fight !== true) {
       // fight anyone near you
       for (var i = 0; i < this.game.units.length; i++) {
         var unit = this.game.units[i];
-        if (unit !== this && unit.fight === null && this.pid !== unit.pid &&
-          this.getDist(unit.x, unit.y) < 10) {
+        if (unit !== this && unit.fight !== true && this.pid !== unit.pid && this.getDist(unit.x, unit.y) < 10) {
           this.setDest(unit.x, unit.y);
           unit.setDest(this.x, this.y);
           this.fight = true;
@@ -116,7 +115,7 @@ define([
   };
 
   Unit.prototype.detectDeath = function() {
-    if (this.dead === false) {
+    if (this.dead !== true) {
       // attack enemy planet or repair own planet
       if (this.planet !== null &&
         this.getDist(this.planet.x, this.planet.y) < 2) {

@@ -7,8 +7,8 @@ define([
   
   var Game = function Game() {
     this.units = [];
-    this.players = [new Player(this, 1), new Player(this, 2)];
     this.planets = [];
+    this.players = [new Player(this, 1), new Player(this, 2)];
     this.tick = 0;
   };
   
@@ -23,7 +23,6 @@ define([
   Game.prototype.addUnit = function(pid, x, y, planet) {
     var u = new Unit(this, pid, x, y, planet);
     this.units.push(u);
-    planet.units.push(u);
     this.players[pid - 1].units.push(u);
   };
 
@@ -58,13 +57,8 @@ define([
 
   Game.prototype.removeDead = function() {
     this.units = this.units.filter(function(unit) {
-      return unit.dead === null || unit.dead === false;
+      return unit.dead !== true;
     });
-    //this.planets.forEach(function(p) {
-    //  p.units = p.units.filter(function(unit) {
-    //    return unit.dead === false;
-    //  });
-    //});
   };
 
   Game.prototype.detectEnd = function(clock) {

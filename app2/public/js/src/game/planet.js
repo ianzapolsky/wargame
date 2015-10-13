@@ -2,18 +2,20 @@ define([
   'underscore',
 ], function(_) {
 
-  var Planet = function Planet(game, x, y, maxSize, owner) {
+  var Planet = function Planet(game, planet) {
     this.game = game;
-    this.x = x;
-    this.y = y;
-    this.owner = owner;
-    this.maxSize = maxSize;
-    this.size = 1;
-    this.r = this.getR();
-    this.units = [];
-    this.hp = 10;
-    this.upgrade = 0;
+    this.id = planet.id;
+    this.x = planet.x;
+    this.y = planet.y;
+    this.owner = planet.owner;
+    this.maxSize = planet.maxSize;
+    this.size = planet.size;
+    this.hp = planet.hp;
+    this.upgrade = planet.upgrade;
+    this.captureState = planet.captureState;
     this.initCaptureState();
+
+    this.r = this.getR();
   };
 
   Planet.prototype.getR = function() {
@@ -77,6 +79,7 @@ define([
       }
       this.captureState[unit.pid - 1] += 1;
       unit.dead = true;
+      debugger;
     }
     this.updateState();
   };
@@ -89,8 +92,11 @@ define([
     if (this.upgrade === 10) {
       this.size += 1;
       this.upgrade = 0;
-      this.units.forEach(function(unit) {
-        unit.repair = null;
+      var _this = this;
+      this.game.units.forEach(function(unit) {
+        if (unit.planet === _this) {
+          unit.repair = null;
+        }
       });
     }
     for (var i = 0; i < this.game.players.length; i++) {

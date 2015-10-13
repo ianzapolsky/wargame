@@ -9,7 +9,6 @@ define([
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
       ctx.fill();
-      this.drawPlanetStatus(ctx, p);
       for (var i = 0; i < (p.maxSize - p.size); i++) {
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgb(100,100,100)';
@@ -17,6 +16,7 @@ define([
         ctx.arc(p.x, p.y, p.r + ((i + 1) * 10), 0, 2 * Math.PI);
         ctx.stroke();
       }
+      this.drawPlanetStatus(ctx, p);
     },
 
     drawPlanetStatus: function(ctx, p) {

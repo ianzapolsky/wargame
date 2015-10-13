@@ -30,6 +30,10 @@ var runGame = function(nsp) {
 
       nsp.emit('game start', game);
 
+      var clock = setInterval(function() {
+        game.addUnits();
+        nsp.emit('game data', game);
+      }, 1000);
     }
 
     if (players > 2) {
@@ -37,7 +41,8 @@ var runGame = function(nsp) {
     }
 
     socket.on('game data', function(data) {
-      console.log(data);
+      game.units = data.units;
+      game.planets = data.planets;
       nsp.emit('game data', data);
     });
 

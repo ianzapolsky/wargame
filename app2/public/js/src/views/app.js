@@ -5,9 +5,10 @@ define([
   'socketio',
   'src/game/game',
   'src/game/unit',
+  'src/game/planet',
   'src/game/player',
   'src/views/utils',
-], function(_, $, Backbone, io, Game, Unit, Player, Utils) {
+], function(_, $, Backbone, io, Game, Unit, Planet, Player, Utils) {
 
   var AppView = Backbone.View.extend({
 
@@ -42,24 +43,81 @@ define([
       });
 
       this.socket.on('game data', function(data) {
-        _this.game.units = [];
-        data.forEach(function(unit) {
-          _this.game.units.push(new Unit(_this.game, unit));
-        });
+        _this.ingestData(data);
       });
 
       this.socket.on('game start', function(data) {
         _this.game = new Game();
-        data.units.forEach(function(unit) {
-          _this.game.units.push(new Unit(_this.game, unit));
-        });
+        _this.ingestData(data);
+
+        _this.game.planets.forEach(function(p) { p.initCaptureState(); });
 
         _this.clock = setInterval(function() {
           _this.render();
           _this.game.doTick();
+          _this.emitData();     
         }, 50);
       });
 
+    },
+    
+    ingestData: function(data) {
+      var _this = this;
+
+      this.game.planets = [];
+      data.planets.forEach(function(planet) {
+        _this.game.planets.push(new Planet(_this.game, planet));
+      });
+
+      // update state of old units
+      for (var i = 0; i < _this.game.units.length && i < data.units.length; i++) {
+        var gunit = _this.game.units[i];
+        var newUnit = data.units[i];
+        gunit.x = newUnit.x;
+        gunit.y = newUnit.y;
+        gunit.y = newUnit.y;
+        gunit.dest_x = newUnit.dest_x;
+        gunit.dest_y = newUnit.dest_y;
+        gunit.repair = newUnit.repair;
+        gunit.fight = newUnit.fight;
+        if (newUnit.planet !== null) {
+          for (var j = 0; j < _this.game.planets.length; j++) {
+            if (newUnit.planet.id === _this.game.planets[j].id) {
+              gunit.planet = _this.game.planets[j];
+              if (newUnit.repair !== null) {
+                if (newUnit.repair.id === _this.game.planets[j].id) {
+                  gunit.repair = _this.game.planets[j];
+                }
+              } else {
+                gunit.repair = null;
+              }
+            }
+          }
+        } else {
+          gunit.planet = null;
+          gunit.repair = null;
+        }
+      }  
+
+        
+      // add new units to the mix
+      for (var i = _this.game.units.length; i < data.units.length; i++) {
+        var unit = data.units[i];
+        var newUnit = new Unit(_this.game, unit);
+        if (newUnit.planet !== null) {
+          for (var j = 0; j < _this.game.planets.length; j++) {
+            if (newUnit.planet.id === _this.game.planets[j].id) {
+              newUnit.planet = _this.game.planets[j];
+              if (newUnit.repair !== null) {
+                if (newUnit.repair.id === _this.game.planets[j].id) {
+                  newUnit.repair = _this.game.planets[j];
+                }
+              }
+            }
+          }
+        }
+        _this.game.units.push(newUnit);
+      }
     },
 
     events: {
@@ -95,7 +153,6 @@ define([
     handleClick: function(e) {
       var _this = this;
       this.game.players[this.pid - 1].executeMove(e.clientX, e.clientY);
-
       this.emitData();
     },
 
@@ -109,18 +166,42 @@ define([
           y:unit.y,
           dest_x:unit.dest_x,
           dest_y:unit.dest_y,
-          planet:unit.planet, 
+          planet:unit.planet,
           dead:unit.dead,
           fight:unit.fight,
           repair:unit.repair
         });
       });
-      this.socket.emit('game data', unitsData);
+      unitsData.forEach(function(unit) {
+        if (unit.planet) {
+          unit.planet.game = null;
+        }
+      });
+
+      var planetsData = [];
+      this.game.planets.forEach(function(planet) {
+        planetsData.push({
+          id:planet.id,
+          owner:planet.owner,
+          x:planet.x,
+          y:planet.y,
+          hp:planet.hp,
+          upgrade:planet.upgrade,
+          captureState:planet.captureState,
+          maxSize:planet.maxSize,
+          size:planet.size
+        });
+      });
+
+      this.socket.emit('game data', {
+        units:unitsData,
+        planets:planetsData
+      });
     },
 
     render: function() {
       this.clearCanvas();
-      //this.renderPlanets();
+      this.renderPlanets();
       this.renderUnits();
       this.renderInteraction();
     },

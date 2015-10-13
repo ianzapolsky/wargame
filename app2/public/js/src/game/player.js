@@ -56,7 +56,6 @@ define([
           } else {
             unit.repair = null
             unit.planet = planet;
-            planet.units.push(unit);
             unit.selected = false;
           }
         });
@@ -64,6 +63,7 @@ define([
         return;
       }
     }
+
     this.selected.forEach(function(unit) {
       unit.setDest(x, y);
       unit.repair = null
