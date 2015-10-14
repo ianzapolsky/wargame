@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var unique = require('uniquely');
 
 var Game = require('./tgame.js').Game;
 
@@ -50,8 +51,12 @@ var runGame = function(nsp) {
 
 };
 
-var nsp = io.of('/room');
-runGame(nsp);
+app.get('/create', function(req, res) {
+  var roomName = unique.random(10);
+  var nsp = io.of('/'+roomName);
+  runGame(nsp);
+  res.redirect('/#'+roomName);
+});
 
 http.listen(8000, function() {
   console.log('listening on port 8000');
