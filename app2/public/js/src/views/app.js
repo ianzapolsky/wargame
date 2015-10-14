@@ -73,17 +73,22 @@ define([
       for (var i = 0; i < _this.game.units.length && i < data.units.length; i++) {
         var gunit = _this.game.units[i];
         var newUnit = data.units[i];
+        gunit.id = newUnit.id;
+        gunit.pid = newUnit.pid;
         gunit.x = newUnit.x;
-        gunit.y = newUnit.y;
         gunit.y = newUnit.y;
         gunit.dest_x = newUnit.dest_x;
         gunit.dest_y = newUnit.dest_y;
         gunit.repair = newUnit.repair;
+        gunit.dead = newUnit.dead;
         gunit.fight = newUnit.fight;
         if (newUnit.planet !== null) {
           for (var j = 0; j < _this.game.planets.length; j++) {
             if (newUnit.planet.id === _this.game.planets[j].id) {
               gunit.planet = _this.game.planets[j];
+
+              gunit.planet.game = _this.game;
+
               if (newUnit.repair !== null) {
                 if (newUnit.repair.id === _this.game.planets[j].id) {
                   gunit.repair = _this.game.planets[j];
@@ -99,7 +104,6 @@ define([
         }
       }  
 
-        
       // add new units to the mix
       for (var i = _this.game.units.length; i < data.units.length; i++) {
         var unit = data.units[i];
@@ -108,6 +112,7 @@ define([
           for (var j = 0; j < _this.game.planets.length; j++) {
             if (newUnit.planet.id === _this.game.planets[j].id) {
               newUnit.planet = _this.game.planets[j];
+              newUnit.planet.game = _this.game;
               if (newUnit.repair !== null) {
                 if (newUnit.repair.id === _this.game.planets[j].id) {
                   newUnit.repair = _this.game.planets[j];

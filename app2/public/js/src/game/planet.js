@@ -13,7 +13,6 @@ define([
     this.hp = planet.hp;
     this.upgrade = planet.upgrade;
     this.captureState = planet.captureState;
-    this.initCaptureState();
 
     this.r = this.getR();
   };
@@ -79,7 +78,6 @@ define([
       }
       this.captureState[unit.pid - 1] += 1;
       unit.dead = true;
-      debugger;
     }
     this.updateState();
   };
@@ -99,7 +97,7 @@ define([
         }
       });
     }
-    for (var i = 0; i < this.game.players.length; i++) {
+    for (var i = 0; i < this.captureState.length; i++) {
       if (this.captureState[i] === 10) {
         this.owner = i + 1;
         this.hp = 10;
