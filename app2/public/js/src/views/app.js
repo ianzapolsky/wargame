@@ -198,13 +198,15 @@ define([
         });
       });
 
-      this.socket.emit('game data', {
+      this.socket.emit(this.player+' game data', {
         units:unitsData,
         planets:planetsData
       });
     },
 
     render: function() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
       this.clearCanvas();
       this.renderPlanets();
       this.renderUnits();
