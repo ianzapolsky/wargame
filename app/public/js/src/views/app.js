@@ -5,9 +5,10 @@ define([
   'socketio',
   'src/game/game',
   'src/game/unit',
+  'src/game/planet',
   'src/game/player',
   'src/views/utils',
-], function(_, $, Backbone, io, Game, Unit, Player, Utils) {
+], function(_, $, Backbone, io, Game, Unit, Planet, Player, Utils) {
 
   var AppView = Backbone.View.extend({
 
@@ -17,7 +18,7 @@ define([
     context: null,
 
     game: null,
-    player: null,
+    pid: null,
 
     mousedown: false,
     down_x: null,
@@ -26,33 +27,57 @@ define([
     curr_y: null,
 
     initialize: function() {
-      this.socket = io();
-      this.canvas = document.getElementById('c');
-      this.canvas.width = window.innerWidth;
+      var _this          = this;
+      this.socket        = io('/' + window.location.hash.split('#')[1]);
+      this.canvas        = document.getElementById('c');
+      this.canvas.width  = window.innerWidth;
       this.canvas.height = window.innerHeight;
-      this.context = this.canvas.getContext('2d');
+      this.context       = this.canvas.getContext('2d');
 
-      this.game = new Game();
-      this.game.init();
+      this.socket.on('set player', function(pid) {
+        _this.pid = pid;
+      });
 
-      this.clock = setInterval(function() {
-          _this.
+      this.socket.on('wait for player', function() {
+        console.log('wait for player');
+      });
 
-      //this.socket.on('game data', function(data) {
-      //});
+      this.socket.on('game start', function(data) {
+        _this.game = new Game(_this.socket);
+        data.planets.forEach(function(p) {
+          np = new Planet(_this.game, p);
+          _this.game.planets[p.id] = np;
+        });
 
-      //this.socket.on('game start', function() {
-      //  _this.clock = setInterval(function() {
-      //    _this.render();
-      //    //_this.game.doTick();
-      //    //_this.game.detectEnd(clock);
-      //  }, 50);
+        _this.clock = setInterval(function() {
+          _this.render();
+          _this.game.doTick();
+          _this.game.detectEnd(_this.clock);
+        }, 50);
+      });
 
-      //  setInterval(function() {
-      //    _this.socket.emit('game data', JSON.stringify(_this.units));
-      //  }, 500);
-      //});
+      this.socket.on('new units', function(newUnits) {
+        //console.log('receiving new unit data'); 
+        //console.log(newUnits);
+        newUnits.forEach(function(u) {
+          _this.game.units[u.id] = new Unit(_this.game, u); 
+        });
+      });
+           
+      this.socket.on('unit data', function(data) {
+        //console.log('receiving data');
+        //console.log(data);
+        _this.ingestData(data);
+      });
+    },
 
+    ingestData: function(data) {
+      var _this = this;
+      data.units.forEach(function(u) {
+        if (typeof(_this.game.units[u.id]) !== 'undefined') {
+          _this.game.units[u.id] = new Unit(_this.game, u);
+        }
+      });
     },
 
     events: {
@@ -77,7 +102,7 @@ define([
         Math.abs(e.clientY - this.down_y) < 3) {
         this.handleClick(e);
       } else {
-        this.game.players[0].flagSelected(this.down_x, this.down_y,
+        this.game.players[this.pid - 1].flagSelected(this.down_x, this.down_y,
           e.clientX, e.clientY);
       }
       this.mousedown = false;
@@ -86,24 +111,51 @@ define([
     },
 
     handleClick: function(e) {
-      this.game.players[0].executeMove(e.clientX, e.clientY);
+      var _this = this;
+      var selected = this.game.players[this.pid - 1].executeMove(e.clientX, e.clientY);
+      if (selected.length > 0) {
+        this.emitData(selected);
+      }
+    },
+
+    emitData: function(units) {
+      var unitData = [];
+      units.forEach(function(u) {
+        unitData.push({
+          id    : u.id,
+          pid   : u.pid,
+          ptid  : u.planet !== null ? u.planet.id : null,
+          x     : u.x,
+          y     : u.y,
+          dest_x: u.dest_x,
+          dest_y: u.dest_y,
+          dead  : u.dead,
+          fight : u.fight,
+          rid   : u.repair !== null ? u.repair.id : null 
+        });
+      });
+      //console.log('emitting unit data: ' + unitData)
+      this.socket.emit('p' + this.pid + ' unit data', {
+        units: unitData,
+      });
     },
 
     render: function() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
       this.clearCanvas();
-      //this.renderPlanets();
+      this.renderPlanets();
       this.renderUnits();
-      //this.renderInteraction();
+      this.renderInteraction();
     },
 
     renderUnits: function() {
       var _this = this;
-      this.units.forEach(function(unit) {
-        Utils.drawUnit(_this.context, unit);
+      this.game.units.forEach(function(unit) {
+        if (unit.dead === false) {
+          Utils.drawUnit(_this.context, unit);
+        }
       });
-      //this.game.units.forEach(function(unit) {
-      //  Utils.drawUnit(_this.context, unit);
-      //});
     },
 
     renderPlanets: function() {

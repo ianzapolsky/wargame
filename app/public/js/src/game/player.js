@@ -13,11 +13,14 @@ define([
   Player.prototype.flagSelected = function(x1, y1, x2, y2) {
     var _this = this;
     this.selected = [];
-    this.units.forEach(function(unit) {
-      unit.selected = false;
-      if (unit.isWithin(x1, y1, x2, y2)) {
-        unit.selected = true;
-        _this.selected.push(unit);
+    this.game.units.forEach(function(unit) {
+      if (unit.pid === _this.pid && unit.dead !== true) {
+        unit.selected = false;
+        
+        if (unit.isWithin(x1, y1, x2, y2)) {
+          unit.selected = true;
+          _this.selected.push(unit);
+        }
       }
     });
   };
@@ -31,7 +34,7 @@ define([
           var planet = this.game.planets[i];
           if (planet.isWithin(x, y)) {
             for (var j = 0; j < this.units.length; j++) {
-              if (this.units[j].planet === planet) {
+              if (this.units[j].planet === planet && this.units[j].dead !== true) {
                 this.units[j].selected = true;
                 this.selected.push(this.units[j]);
               }
@@ -40,8 +43,13 @@ define([
           }
         }
       }
-      return;
+      return [];
     }
+
+    var selectedCopy = [];
+    this.selected.forEach(function(unit) {
+      selectedCopy.push(unit);
+    });
 
     for (var i = 0; i < this.game.planets.length; i++) {
       var planet = this.game.planets[i];
@@ -53,14 +61,14 @@ define([
           } else {
             unit.repair = null
             unit.planet = planet;
-            planet.units.push(unit);
             unit.selected = false;
           }
         });
         this.selected = []
-        return;
+        return selectedCopy;
       }
     }
+
     this.selected.forEach(function(unit) {
       unit.setDest(x, y);
       unit.repair = null
@@ -68,16 +76,19 @@ define([
       unit.selected = false;
     });
     this.selected = [];
+    return selectedCopy;
   };
 
   Player.prototype.computerMove = function() {
     var _this = this;
     this.units.forEach(function(u) {
-      _this.game.planets.forEach(function(p) {
-        if (p.owner !== _this.pid) {
-          u.planet = p;
-        }
-      });
+      if (u.dead !== true) {
+        _this.game.planets.forEach(function(p) {
+          if (p.owner !== _this.pid) {
+            u.planet = p;
+          }
+        });
+      }
     });
   };
 
